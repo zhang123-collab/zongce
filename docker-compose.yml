@@ -1,0 +1,24 @@
+services:
+  zongce:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zongce-app
+    ports:
+      - "8000:8000"
+    environment:
+      ZONGCE_DATABASE_URL: sqlite:////app/data/zongce.db
+      ZONGCE_UPLOAD_DIR: /app/data/uploads
+      ZONGCE_SECRET_KEY: ${ZONGCE_SECRET_KEY:-local-docker-demo-secret-change-before-deployment}
+      ZONGCE_CORS_ORIGINS: ${ZONGCE_CORS_ORIGINS:-http://127.0.0.1:8000,http://localhost:8000}
+      ZONGCE_AI_ENABLED: ${ZONGCE_AI_ENABLED:-0}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL:-https://api.deepseek.com/chat/completions}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
+    volumes:
+      - zongce_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  zongce_data:
+    name: zongce_data

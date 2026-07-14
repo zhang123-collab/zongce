@@ -1,0 +1,4 @@
+# 图片、扫描版PDF的本地OCR为可选增强；纯文本PDF仅需 requirements.txt。
+pypdfium2>=4.30,<6
+rapidocr-onnxruntime>=1.4,<2
+Pillow>=10,<13

@@ -1,0 +1,7 @@
+services:
+  zongce:
+    environment:
+      ZONGCE_DATABASE_URL: sqlite:////app/internal-data/zongce.db
+      ZONGCE_UPLOAD_DIR: /app/internal-data/uploads
+    volumes:
+      - ./internal-data:/app/internal-data
