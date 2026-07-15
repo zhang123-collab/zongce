@@ -122,6 +122,44 @@ app.include_router(publications_router)
 app.include_router(reports_router)
 
 
+# ==================== Web Demo 模块（新增） ====================
+from fastapi import Depends
+from fastapi.responses import JSONResponse
+from zongce.core import get_current_user, User
+
+@app.get("/webdemo/health")
+async def webdemo_health():
+    """Web Demo 健康检查（公开）"""
+    return {"status": "ok", "module": "webdemo"}
+
+@app.post("/webdemo/api/chat")
+async def webdemo_chat(
+    request: Request,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Web Demo 对话接口（受平台认证保护）
+    复用综测系统的 JWT 认证，无需额外配置。
+    """
+    try:
+        data = await request.json()
+        user_input = data.get("input", "")
+        
+        # 从环境变量读取 API Key（复用已有配置）
+        api_key = os.environ.get("DEEPSEEK_API_KEY", "")
+        
+        # 示例：回显用户输入（可替换为调用 DeepSeek/Dify）
+        return {
+            "answer": f"你好 {current_user.real_name}，你说了: {user_input}。此响应来自受保护的后端。"
+        }
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"处理请求失败: {str(e)}"}
+        )
+# ==================== Web Demo 模块结束 ====================
+
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
